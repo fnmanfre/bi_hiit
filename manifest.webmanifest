@@ -1,0 +1,18 @@
+{
+  "name": "BI HIIT",
+  "short_name": "BI HIIT",
+  "description": "Cronômetro configurável para treinos HIIT.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#10171e",
+  "theme_color": "#16212b",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

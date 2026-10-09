@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bi_hiit_app
+    restart: always
+    ports:
+      - "4173:80"

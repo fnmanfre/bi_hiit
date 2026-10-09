@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16212b" />
+    <meta name="description" content="Cronômetro configurável para treinos HIIT." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>BI HIIT</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Espaço reservado para o logo">BI</div>
+        <div>
+          <p class="eyebrow">Treino intervalado</p>
+          <h1>BI HIIT</h1>
+        </div>
+      </div>
+      <button class="icon-button" id="theme-toggle" type="button" aria-label="Alternar tema"></button>
+    </header>
+
+    <main class="app-shell">
+      <section id="timer-view" class="view active" aria-labelledby="timer-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Sessão atual</p>
+            <h2 id="timer-title">Pronto para começar</h2>
+          </div>
+          <span class="status-pill" id="timer-status">Parado</span>
+        </div>
+
+        <article class="timer-card" id="timer-card">
+          <div class="timer-meta">
+            <span id="stage-counter">Etapa 0 de 0</span>
+            <span id="round-counter">Ciclo 0 de 0</span>
+          </div>
+          <div class="timer-display" id="time-display" aria-live="polite">00:00</div>
+          <p class="timer-stage" id="stage-name">Configure um treino para começar</p>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <div class="timer-actions">
+            <button class="button button-primary" id="start-button" type="button">Começar</button>
+            <button class="button button-secondary" id="advance-button" type="button">Avançar</button>
+            <button class="button button-secondary" id="reset-button" type="button">Reiniciar</button>
+          </div>
+          <p class="support-note" id="support-note"></p>
+        </article>
+
+        <div class="next-stage" id="next-stage"></div>
+        <div class="completion-message" id="completion-message" role="status" aria-live="polite" hidden>
+          <strong>Treino concluído!</strong>
+          <span>Bom trabalho. Quando quiser, você pode começar novamente.</span>
+        </div>
+      </section>
+
+      <section id="workout-view" class="view" aria-labelledby="workout-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Personalização</p>
+            <h2 id="workout-title">Meu treino</h2>
+          </div>
+          <button class="button button-secondary compact" id="restore-defaults" type="button">Usar exemplo</button>
+        </div>
+        <div class="form-card">
+          <label class="field-label" for="workout-name">Nome do treino</label>
+          <input class="text-input" id="workout-name" type="text" maxlength="60" />
+          <label class="field-label" for="rounds-input">Quantidade de ciclos</label>
+          <input class="text-input" id="rounds-input" type="number" min="1" max="99" inputmode="numeric" />
+        </div>
+        <h3 class="subheading">Aquecimento (uma vez)</h3>
+        <div class="stage-list" id="warmup-editor"></div>
+        <h3 class="subheading">Etapas repetidas em cada ciclo</h3>
+        <div class="stage-list" id="stage-list"></div>
+        <button class="button button-secondary add-stage" id="add-stage" type="button">+ Adicionar etapa</button>
+      </section>
+
+      <section id="settings-view" class="view" aria-labelledby="settings-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Preferências</p>
+            <h2 id="settings-title">Configurações</h2>
+          </div>
+        </div>
+        <div class="settings-card">
+          <label class="setting-row">
+            <span>
+              <strong>Contagem regressiva sonora</strong>
+              <small>Emite sinais nos últimos 3 segundos.</small>
+            </span>
+            <input id="countdown-toggle" type="checkbox" />
+          </label>
+          <label class="setting-row">
+            <span>
+              <strong>Manter tela ativa</strong>
+              <small>Usa Wake Lock quando suportado pelo navegador.</small>
+            </span>
+            <input id="wake-lock-toggle" type="checkbox" />
+          </label>
+          <div class="info-box">
+            <strong>Sobre o segundo plano</strong>
+            <p>O Android pode suspender páginas web em segundo plano. Para maior confiabilidade, mantenha esta página aberta e desative a economia de bateria do navegador. Alarmes garantidos com a tela bloqueada exigem um app nativo.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navegação principal">
+      <button class="nav-button active" data-view="timer-view" type="button"><span>◷</span>Treino</button>
+      <button class="nav-button" data-view="workout-view" type="button"><span>☷</span>Editar</button>
+      <button class="nav-button" data-view="settings-view" type="button"><span>⚙</span>Ajustes</button>
+    </nav>
+    <script src="app.js?v=5" defer></script>
+  </body>
+</html>
