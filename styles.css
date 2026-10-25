@@ -75,6 +75,8 @@ body.light .icon-button::before { content: "☾"; }
 .progress-bar { height: 100%; width: 0; background: var(--stage-color, var(--accent)); transition: width .3s linear; }
 .timer-actions { display: flex; gap: 10px; justify-content: center; }
 .timer-actions .button { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; }
+.icon-action { display: grid; place-items: center; min-width: 48px !important; min-height: 46px; padding: 8px !important; }
+.icon-action span { font-size: 1.35rem; line-height: 1; }
 .button { border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 750; }
 .button-primary { background: var(--accent); color: #1d211f; }
 .button-secondary { background: var(--surface-strong); color: var(--text); border: 1px solid var(--border); }

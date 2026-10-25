@@ -23,6 +23,7 @@ let timer = { running: false, completed: false, stageIndex: -1, round: 1, remain
 let wakeLock = null;
 let audioContext = null;
 let serviceWorkerRegistration = null;
+let mediaAudio = null;
 
 function loadConfig() {
   try {
@@ -97,7 +98,10 @@ function renderTimer() {
   $("#stage-counter").textContent = timer.stageIndex === -1 ? "Aquecimento" : (hasWorkout ? `Etapa ${timer.stageIndex + 1} de ${stages.length}` : "Etapa 0 de 0");
   $("#round-counter").textContent = hasWorkout ? `Ciclo ${timer.round} de ${config.workout.rounds}` : "Ciclo 0 de 0";
   $("#timer-status").textContent = timer.completed ? "Concluído" : (timer.running ? "Em andamento" : "Parado");
-  $("#start-button").textContent = timer.running ? "Pausar" : (timer.remaining > 0 ? "Continuar" : "Começar");
+  const startButton = $("#start-button");
+  startButton.innerHTML = `<span aria-hidden="true">${timer.running ? "⏸" : "▶"}</span>`;
+  startButton.setAttribute("aria-label", timer.running ? "Pausar" : (timer.remaining > 0 ? "Continuar" : "Começar"));
+  startButton.title = timer.running ? "Pausar" : (timer.remaining > 0 ? "Continuar" : "Começar");
   $("#timer-card").style.setProperty("--stage-color", stage?.color || "var(--accent)");
   const progress = timer.total > 0 ? ((timer.total - timer.remaining) / timer.total) * 100 : 0;
   $("#progress-bar").style.width = `${Math.min(100, Math.max(0, progress))}%`;
@@ -110,6 +114,7 @@ function renderTimer() {
 
 function resetTimer() {
   clearInterval(timer.interval);
+  pauseMediaAudio(true);
   timer = { running: false, completed: false, stageIndex: -1, round: 1, remaining: 0, total: 0, interval: null };
   renderTimer();
   releaseWakeLock();
@@ -123,7 +128,7 @@ function beginStage(index, round) {
   timer.total = totalStageSeconds(stage);
   timer.remaining = timer.total;
   announce(stage.name);
-  notifyWorkout(stage.name, `Ciclo ${round} de ${config.workout.rounds}`);
+  notifyWorkout(config.workout.name || "BI HIIT", `Etapa: ${stage.name} · Ciclo ${round} de ${config.workout.rounds}`);
   renderTimer();
 }
 
@@ -138,6 +143,7 @@ function tick() {
       timer.completed = true;
       clearInterval(timer.interval);
       announce(config.completionMessage);
+      pauseMediaAudio(true);
       notifyWorkout(config.completionMessage, config.workout.name || "Treino concluído");
       renderTimer();
       releaseWakeLock();
@@ -154,12 +160,14 @@ function toggleTimer() {
   if (timer.running) {
     timer.running = false;
     clearInterval(timer.interval);
+    pauseMediaAudio();
     releaseWakeLock();
   } else {
     unlockAudio();
     if (timer.completed) resetTimer();
     if (!timer.remaining) beginStage(config.workout.warmup ? -1 : 0, 1);
     timer.running = true;
+    playMediaAudio();
     timer.interval = setInterval(tick, 1000);
     requestWakeLock();
   }
@@ -178,12 +186,14 @@ function advanceStage() {
     timer.completed = true;
     clearInterval(timer.interval);
     announce(config.completionMessage);
+    pauseMediaAudio(true);
     notifyWorkout(config.completionMessage, config.workout.name || "Treino concluído");
     releaseWakeLock();
     renderTimer();
   }
   if (!timer.completed && !timer.running) {
     timer.running = true;
+    playMediaAudio();
     timer.interval = setInterval(tick, 1000);
   }
   renderTimer();
@@ -235,6 +245,43 @@ function beep(frequency = 880, duration = 0.16) {
   oscillator.stop(audioContext.currentTime + duration);
 }
 
+function createMediaAudio() {
+  const sampleRate = 8000;
+  const samples = sampleRate;
+  const buffer = new ArrayBuffer(44 + samples);
+  const view = new DataView(buffer);
+  const writeText = (offset, text) => [...text].forEach((character, index) => view.setUint8(offset + index, character.charCodeAt(0)));
+  writeText(0, "RIFF");
+  view.setUint32(4, 36 + samples, true);
+  writeText(8, "WAVEfmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate, true);
+  view.setUint16(32, 1, true);
+  view.setUint16(34, 8, true);
+  writeText(36, "data");
+  view.setUint32(40, samples, true);
+  for (let index = 44; index < buffer.byteLength; index += 1) view.setUint8(index, 128);
+  mediaAudio = new Audio(URL.createObjectURL(new Blob([buffer], { type: "audio/wav" })));
+  mediaAudio.loop = true;
+  mediaAudio.volume = 0.001;
+}
+
+function playMediaAudio() {
+  if (!mediaAudio) createMediaAudio();
+  mediaAudio.play().catch(() => {
+    $("#support-note").textContent = "O navegador não permitiu ativar os controles de mídia.";
+  });
+}
+
+function pauseMediaAudio(reset = false) {
+  if (!mediaAudio) return;
+  mediaAudio.pause();
+  if (reset) mediaAudio.currentTime = 0;
+}
+
 function announce(text) {
   beep(880, 0.22);
   if ("speechSynthesis" in window) {
@@ -249,8 +296,10 @@ function notifyWorkout(title, body) {
   if (!config.settings.notifications || !("Notification" in window) || Notification.permission !== "granted") return;
   const options = {
     body,
-    tag: "bi-hiit-workout",
+    tag: `bi-hiit-${Date.now()}`,
     renotify: true,
+    silent: false,
+    vibrate: [200, 100, 200],
     icon: "./icons/icon.svg",
     badge: "./icons/icon.svg"
   };
