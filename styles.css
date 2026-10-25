@@ -74,6 +74,7 @@ body.light .icon-button::before { content: "☾"; }
 .progress-track { height: 8px; margin: 26px 0; overflow: hidden; background: var(--surface-strong); border-radius: 8px; }
 .progress-bar { height: 100%; width: 0; background: var(--stage-color, var(--accent)); transition: width .3s linear; }
 .timer-actions { display: flex; gap: 10px; justify-content: center; }
+.timer-actions .button { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; }
 .button { border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 750; }
 .button-primary { background: var(--accent); color: #1d211f; }
 .button-secondary { background: var(--surface-strong); color: var(--text); border: 1px solid var(--border); }
@@ -104,6 +105,8 @@ body.light .icon-button::before { content: "☾"; }
 .setting-row strong, .setting-row small { display: block; }
 .setting-row small { color: var(--muted); font-size: .78rem; margin-top: 3px; }
 .setting-row input { accent-color: var(--accent); width: 21px; height: 21px; }
+.setting-field { padding: 18px; border-bottom: 1px solid var(--border); }
+.setting-field small { display: block; color: var(--muted); font-size: .78rem; margin-top: 6px; }
 .info-box { margin: 16px; padding: 14px; border-radius: 12px; background: var(--surface-strong); color: var(--muted); font-size: .8rem; }
 .info-box strong { color: var(--text); display: block; margin-bottom: 5px; }
 .bottom-nav {

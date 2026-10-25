@@ -43,6 +43,7 @@
             <div class="progress-bar" id="progress-bar"></div>
           </div>
           <div class="timer-actions">
+            <button class="button button-secondary" id="previous-button" type="button">Voltar</button>
             <button class="button button-primary" id="start-button" type="button">Começar</button>
             <button class="button button-secondary" id="advance-button" type="button">Avançar</button>
             <button class="button button-secondary" id="reset-button" type="button">Reiniciar</button>
@@ -52,7 +53,7 @@
 
         <div class="next-stage" id="next-stage"></div>
         <div class="completion-message" id="completion-message" role="status" aria-live="polite" hidden>
-          <strong>Treino concluído!</strong>
+          <strong id="completion-message-title">Treino concluído</strong>
           <span>Bom trabalho. Quando quiser, você pode começar novamente.</span>
         </div>
       </section>
@@ -100,9 +101,21 @@
             </span>
             <input id="wake-lock-toggle" type="checkbox" />
           </label>
+          <div class="setting-field">
+            <label class="field-label" for="completion-message-input">Mensagem de encerramento</label>
+            <input class="text-input" id="completion-message-input" type="text" maxlength="100" />
+            <small>Será exibida, falada e usada na notificação ao concluir o treino.</small>
+          </div>
+          <label class="setting-row">
+            <span>
+              <strong>Notificações do treino</strong>
+              <small>Notifica a cada etapa e ao concluir para permitir alertas na pulseira.</small>
+            </span>
+            <input id="notifications-toggle" type="checkbox" />
+          </label>
           <div class="info-box">
             <strong>Sobre o segundo plano</strong>
-            <p>O Android pode suspender páginas web em segundo plano. Para maior confiabilidade, mantenha esta página aberta e desative a economia de bateria do navegador. Alarmes garantidos com a tela bloqueada exigem um app nativo.</p>
+            <p>Media Session permite usar controles de mídia compatíveis, como os da Galaxy Fit 3. O Android pode suspender páginas web em segundo plano. Para maior confiabilidade, mantenha esta página aberta, permita notificações e desative a economia de bateria do navegador.</p>
           </div>
         </div>
       </section>
@@ -113,6 +126,6 @@
       <button class="nav-button" data-view="workout-view" type="button"><span>☷</span>Editar</button>
       <button class="nav-button" data-view="settings-view" type="button"><span>⚙</span>Ajustes</button>
     </nav>
-    <script src="app.js?v=5" defer></script>
+    <script src="app.js?v=6" defer></script>
   </body>
 </html>

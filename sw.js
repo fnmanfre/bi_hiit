@@ -1,9 +1,9 @@
-const CACHE_NAME = "bi-hiit-v5";
+const CACHE_NAME = "bi-hiit-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
-  "./app.js?v=5",
+  "./app.js?v=6",
   "./manifest.webmanifest",
   "./icons/icon.svg"
 ];
@@ -24,4 +24,14 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      const existing = windowClients.find((client) => "focus" in client);
+      return existing ? existing.focus() : clients.openWindow("./");
+    })
+  );
 });
