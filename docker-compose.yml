@@ -6,4 +6,5 @@ services:
     container_name: bi_hiit_app
     restart: always
     ports:
-      - "4173:80"
+      # Só a própria máquina (cloudflared) acessa; a rede local não
+      - "127.0.0.1:4173:80"
